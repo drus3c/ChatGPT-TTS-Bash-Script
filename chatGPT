@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+echo "Welcome to ChatGPT."
+echo "-------------------------------------------------"
+echo "Chat:"
+
+#Substitue text "OPENAI_TOKEN" with your token that you can find in your OpenAI account in the following url https://platform.openai.com/account/api-keys 
+while true; do
+	read peticion
+	resultado=$(curl -s https://api.openai.com/v1/chat/completions -H 'Content-Type: application/json' -H 'Authorization: Bearer OPENAI_TOKEN' \
+	-d '{"model": "gpt-3.5-turbo","messages": [{"role": "user", "content": "'"$peticion"'"}],"temperature": 0.7}')
+	resultado_filtrado=$(echo "$resultado" | sed -e 's/.*content":"//g;s/},"finish_reason.*//g' | sed 's/.*\\n//g')
+	echo "$resultado_filtrado"
+	#spd-say "$resultado_filtrado"
+	espeak -v en-us "$resultado_filtrado"
+	if [ "$peticion" == "bye" ]; then
+        	break
+	fi
+done
